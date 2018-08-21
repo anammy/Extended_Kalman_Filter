@@ -1,4 +1,7 @@
+#define _USE_MATH_DEFINES
+
 #include "kalman_filter.h"
+#include <cmath>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -25,6 +28,8 @@ void KalmanFilter::Predict() {
   TODO:
     * predict the state
   */
+  x_ = F_*x_;
+  P_ = F_*P_*F_.transpose() + Q_;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
@@ -32,6 +37,8 @@ void KalmanFilter::Update(const VectorXd &z) {
   TODO:
     * update the state by using Kalman Filter equations
   */
+  y = z - H_*x_;
+  MeasUpdate(y);
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
@@ -39,4 +46,38 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   TODO:
     * update the state by using Extended Kalman Filter equations
   */
+  VectorXd hx = VectorXd(3);
+  double px = x_(0);
+  double py = x_(1);
+  double vx = x_(2);
+  double vy = x_(3);
+
+  //Convert x from Cartesian to polar coordinates
+  hx(0) = sqrt(px*px + py*py);
+  hx(1) = atan2(py,px);
+  hx(2) = (px*vx + py*vy)/hx(0);
+
+  y = z - hx;
+
+  while( y(1) > M_PI || y(1) < -M_PI){
+    if(y(1) < -M_PI){
+  	y(1) += M_PI;
+    }
+    else{
+    	y(1) -= M_PI;
+    }
+  }
+
+  MeasUpdate(y);
+}
+
+void KalmanFilter::MeasUpdate(const VectorXd &y){
+  //Update x_ and P_ after calculating y for lidar or radar measurement
+  MatrixXd S = H_*P_*H_.transpose() + R_;
+  MatrixXd K = P_*H_.transpose()*S.inverse();
+  long x_size = x_.size();
+  MatrixXd I = MatrixXd::Identity(x_size, x_size);
+  
+  x_ = x_ + K*y;
+  P_ = (I - K*H_)*P_;
 }
