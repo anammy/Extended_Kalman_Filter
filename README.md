@@ -8,10 +8,10 @@ The objective of this project is to implement an extended kalman filter to estim
 
 This project requires the following files to run:
 * Utiltiies: Run script 'install-ubuntu.sh' for Linux, 'install-mac.sh' for Mac, 'install-ubuntu.sh' in Ubuntu Bash 16.04 for Windows.
- ** cmake: 3.5
- ** make: 4.1 (Linux and Mac), 3.81 (Windows)
- ** gcc/g++: 5.4
- ** [uWebSocketIO](https://github.com/uNetworking/uWebSockets)
+  * cmake: 3.5
+  * make: 4.1 (Linux and Mac), 3.81 (Windows)
+  * gcc/g++: 5.4
+  * [uWebSocketIO](https://github.com/uNetworking/uWebSockets)
 * Udacity Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
 
 Once the install for uWebSocketIO is complete, the main program can be built and run by doing the following from the project top directory.
